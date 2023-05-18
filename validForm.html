@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valid Form</title>
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.8/css/line.css">
+    <style>
+        *{
+            box-sizing: border-box;
+            padding:0;
+            margin:0;
+            font-family: Georgia, 'Times New Roman', Times, serif;
+        }
+        form{
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            margin:5rem 0;
+            width: 100%;
+            max-width: 470px;
+            min-width: 300px;
+            padding:1rem 1rem 2rem;
+            border-radius: 5px;
+            box-shadow: 0 0 3px;
+            display: flex;
+            flex-direction: column;
+            gap:1rem;
+        }
+
+        .field{
+            display: flex;
+            flex-direction: column;
+            gap:0.5rem;
+        }
+        sup{
+            vertical-align: middle;
+            margin-left: 2px;
+            color:red;
+        }
+        label{
+            font-size: 0.9rem;
+        }
+        input{
+            padding:0.7rem 0.6rem;
+            font-size: 1rem;
+            color:gray;
+            border:0.1px solid;
+            border-radius: 3px;
+        }
+        input:focus{
+            box-shadow: unset;
+            outline: unset;
+        }
+        button{
+            width: 150px;
+            padding:0.5rem 0;
+            font-weight: 700;
+            color:white;
+            background-color: darkblue;
+            border-radius: 5px;
+            border:unset;
+            cursor: pointer;
+        }
+        button:disabled{
+            opacity: 0.5;
+            cursor: initial;
+        }
+        .invalid{
+            border-color: red;
+        }
+        .error-msg{
+            font-size:0.75rem;
+            margin-top:2px;
+            text-transform: capitalize;
+            color:red;
+        }
+        .sub-field{
+            display:flex;
+            gap:1rem;
+            align-items: center;
+            border:0.1px solid gray;
+            border-radius: 3px;
+            position: relative;
+        }
+        #password{
+            flex-grow: 1;
+            border:unset;
+        }
+        i{
+            cursor: pointer;
+            margin-right: 1rem;
+        }
+        
+        .sub-field:after{
+            content:attr(data-title);
+            background-color: white;
+            color:grey;
+            position: absolute;
+            visibility: hidden;
+            padding:10px 12px;
+            font-size: 70%;
+            letter-spacing: 1.2px;
+            border-radius: 5px;
+            bottom:120%;
+            box-shadow: 0 0 5px;
+            z-index: 10000;
+
+        }
+
+        .sub-field:hover::after{
+            visibility: visible;
+            transition: all 0.6s ease-in-out 0.2s;
+        }
+        
+        .check-validation{
+            list-style-type: none;
+            display: none;
+            flex-direction: column;
+            gap:0.3rem;
+            padding:0 1rem;
+            margin-right: 30%;
+            transition: all 0.5s ease-in 0s;
+        }
+
+        .check-validation li{
+            font-size: 85%;
+            color:gray;
+            text-transform: lowercase;
+            letter-spacing: 0.6px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .check-validation i{
+            margin-left: 8px;
+            font-size: 1rem;
+            transition: all 0.2s ease-in 0s;
+        }
+        i.uil-check-circle{
+            color:green;
+        }
+        i.uil-times-circle{
+            color:red;
+        }
+
+        .show{
+            display:flex;
+        }
+    </style>
+</head>
+<body>
+    <form>
+        <h2>SignUp</h2>
+        <div class="field">
+            <label for="name">Name<sup>*</sup></label>
+            <input name="name" id="name" placeholder="Enter name" value="" type="text"/>
+            <p class="error-msg"></p>
+        </div>
+        <div class="field">
+            <label for="email">Email<sup>*</sup></label>
+            <input name="email" id="emial" placeholder="Enter emial" value="" type="emial"/>
+            <p class="error-msg"></p>
+        </div><div class="field">
+            <label for="password">Password<sup>*</sup></label>
+            <div class="sub-field" data-title="Password must contain minimum 8 charachters, one uppercase, one lowercase, one number and one special charachter.">
+                <input name="password" id="password" placeholder="Enter password" value="" type="password"/>
+                <i class="uil uil-eye" id="show"></i>
+            </div>
+            <p class="error-msg"></p>
+            <ul class="check-validation">
+                <li id="upper">UpperCase charachter included <i class="uil "></i></li>
+                <li id="lower">LowerCase character included <i class="uil "></i></li>
+                <li id="num">Number included <i class="uil "></i></li>
+                <li id="s_char">Special character included <i class="uil "></i></li>
+                <li id="min">Min charachters 8 <i class="uil "></i></li>
+            </ul>
+        </div><div class="field">
+            <label for="confirm_password">Confirm Password<sup>*</sup></label>
+            <input disabled name="confirm_password" id="confirm_password" placeholder="Enter password again" value="" type="password"/>
+            <p class="error-msg"></p>
+        </div>
+        <button disabled id="submit" type="submit">Sign Up</button>
+    </form>
+
+    <script>
+        //getting elements by input tag name
+        const elements = document.getElementsByTagName("input");
+        const submit = document.getElementById("submit");
+        const u = document.getElementById("upper");
+        const l = document.getElementById("lower");
+        const n = document.getElementById("num");
+        const s = document.getElementById("s_char");
+        const m = document.getElementById("min");
+        const check_list = document.querySelector(".check-validation");
+        // an object template for storing errors
+        function err(isTouched,hasError,errorMsg){
+            this.isTouched = isTouched;
+            this.hasError = hasError;
+            this.errorMsg = errorMsg;
+        }
+        const error = {};
+        for(element of elements){
+            error[element.name] = new err(false,true,"");
+            //onblur event validation managment;
+            element.addEventListener('blur',(e)=>{
+                let ele = error[e.target.name];
+                ele.hasError = e.target.value == "" ? true : false;
+                ele.errorMsg = ele.hasError ? `Enter ${e.target.name}`:null;
+                if(ele.hasError && !ele.isTouched){
+                    e.target.setAttribute("class","invalid");
+                    if(e.target.name == "password"){
+                        e.target.parentElement.nextElementSibling.innerText =ele.errorMsg;
+                    }else{
+                        e.target.nextElementSibling.innerText = ele.errorMsg;
+                    }
+                    ele.isTouched = true;
+                }
+            })
+
+            switch(element.name){
+                case "name":
+                    element.addEventListener('keyup',(e)=>{
+                        let ele = error[e.target.name];
+                        if(e.target.value == ""){
+                            ele.errorMsg = "Enter name";
+                            e.target.setAttribute("class","invalid");
+                            e.target.nextElementSibling.innerText =ele.errorMsg;
+                            ele.hasError = true;
+                            return;
+                        }
+                        e.target.removeAttribute("class","invalid");
+                        e.target.nextElementSibling.innerText="";  
+                        ele.hasError = false;
+                        ele.errorMsg = "";
+                        ele.isTouched = false;
+                    })
+                    break;
+                case "email":
+                    element.addEventListener('keyup',(e)=>{
+                        let ele = error[e.target.name];
+                        if(e.target.value == ""){
+                            ele.errorMsg = "Enter Email";
+                            e.target.setAttribute("class","invalid");
+                            e.target.nextElementSibling.innerText = ele.errorMsg;
+                            ele.hasError = true;
+                            return;
+                        }
+                        let val = e.target.value;
+                        let isMatching = val.match(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/);
+                        if(!isMatching && !ele.isTouched){
+                            e.target.setAttribute("class","invalid");
+                            ele.errorMsg = "Enter Valid Email";
+                            ele.hasError = true;
+                            e.target.nextElementSibling.innerText = ele.errorMsg;
+                        }else{
+                            e.target.removeAttribute("class","invalid");
+                            e.target.nextElementSibling.innerText = "";
+                            ele.hasError = false;
+                            ele.errorMsg = "";
+                            ele.isTouched = false;
+                        }
+                    })
+                    break;
+                case "password":
+                    element.addEventListener('keyup',(e)=>{
+                        let ele = error[e.target.name];
+                        let val = e.target.value;
+                        elements["confirm_password"].setAttribute("disabled","");
+                        elements["confirm_password"].value = "";
+                        error["confirm_password"].hasError = true
+                        check_list.classList.add("show");
+                        let up = upper(val);
+                        let lo = lower(val) ;
+                        let mi = min(val);
+                        let s_c = s_char(val);
+                        let nu = num(val);
+                        (function(upper,lower,min,s_char,num){
+                            u.firstElementChild.classList.remove(upper?"uil-times-circle":"uil-check-circle");
+                            u.firstElementChild.classList.add(upper?"uil-check-circle":"uil-times-circle");
+                            l.firstElementChild.classList.remove(lower?"uil-times-circle":"uil-check-circle");
+                            l.firstElementChild.classList.add(lower?"uil-check-circle":"uil-times-circle");
+                            m.firstElementChild.classList.remove(min?"uil-times-circle":"uil-check-circle");
+                            m.firstElementChild.classList.add(min?"uil-check-circle":"uil-times-circle");
+                            s.firstElementChild.classList.remove(s_char?"uil-times-circle":"uil-check-circle");
+                            s.firstElementChild.classList.add(s_char?"uil-check-circle":"uil-times-circle");
+                            n.firstElementChild.classList.remove(num?"uil-times-circle":"uil-check-circle");
+                            n.firstElementChild.classList.add(num?"uil-check-circle":"uil-times-circle");
+                            
+                        })(up,lo,mi,s_c,nu);
+                        if(e.target.value == ""){
+                            ele.errorMsg = "Enter password";
+                            e.target.setAttribute("class","invalid");
+                            ele.hasError = true;
+                            e.target.parentElement.nextElementSibling.innerText =ele.errorMsg;
+                            return;
+                        }
+                        e.target.removeAttribute("class","invalid");
+                        ele.errorMsg = "";
+                        e.target.parentElement.nextElementSibling.innerText =ele.errorMsg;  
+                        ele.hasError = false;
+                        ele.isTouched = false;
+                        if(up&&lo&&mi&&s_c&&nu) {
+                                elements["confirm_password"].removeAttribute("disabled");
+                                ele.hasError = false;
+                            }
+                        else{
+                            elements["confirm_password"].setAttribute("disabled","");
+                            ele.hasError = true;
+                        };
+                    })
+                    break;
+                default:
+                    element.addEventListener('keyup',(e)=>{
+                            let ele = error[e.target.name];
+                            let pwd = elements["password"];
+                            if(e.target.value == ""){
+                                ele.errorMsg = "Enter confirm_password";
+                                e.target.setAttribute("class","invalid");
+                                e.target.nextElementSibling.innerText =ele.errorMsg;
+                                ele.hasError = true;
+                                return;
+                            }
+                            if(e.target.value != pwd.value){
+                                ele.errorMsg = "Password not matched";
+                                e.target.setAttribute("class","invalid");
+                                ele.hasError = true;
+                                e.target.nextElementSibling.innerText =ele.errorMsg;
+                                return;
+                            }
+                            e.target.removeAttribute("class","invalid");
+                            e.target.nextElementSibling.innerText="";  
+                            ele.hasError = false;
+                            ele.errorMsg = "";
+                            ele.isTouched = false;
+                    })
+            }
+
+        }
+
+        const eye = document.getElementById("show");
+        eye.addEventListener('click',(e)=>{
+            eye.classList.toggle("uil-eye");
+            eye.classList.toggle("uil-eye-slash");
+            let input = e.target.previousElementSibling;
+            let att = input.getAttribute("type");
+            att = att=="password" ? "text" : "password";
+            input.setAttribute("type",att);
+        })
+
+        const upper = val=>{
+            return val.match(/[A-Z]/);
+        }
+        const lower = val=>{
+            return val.match(/[a-z]/);
+        }
+        const num = val=>{
+            return val.match(/[0-9]/);
+        }
+        const min = val=>{
+            return val.length > 8;
+        }
+        const s_char = val=>{
+            return val.match(/[~`!@#$%^&*())_+-=:"|<>?;'"\\,.\/{}\[\]]/);
+
+        }
+
+        document.onkeyup = handle;
+        function handle(){
+            error["name"].hasError || error["password"].hasError || error["email"].hasError || error["confirm_password"].hasError ?
+            submit.setAttribute("disabled",""):submit.removeAttribute("disabled");
+        }
+    </script>
+</body>
+</html>
